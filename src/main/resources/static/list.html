@@ -1,0 +1,13 @@
+<div>
+    Just nu finns det {{profiles.length}} profiler:
+    <ul>
+        <li ng-repeat="profile in profiles">
+            <a ng-click="showProfile(profile.id)" href>{{profile.name}}</a>
+        </li>
+    </ul>
+    <form ng-submit="save()">
+        Namn:    <input ng-model="newProfile.name" name="name"/><br>
+        <input type="submit" class="btn btn-sm btn-success" value="Ny profil" />
+    </form>
+
+</div>

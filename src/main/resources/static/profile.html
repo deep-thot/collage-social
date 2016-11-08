@@ -1,0 +1,8 @@
+<div>
+    <h2>{{profile.name}}</h2>
+
+
+    <div>Om {{profile.name}}: {{profile.bio || 'Inget här'}}</div>
+    <div ng-show="{{profile.fbLink}}"><a href="https://wwwfacebook.com/{{profile.fbLink}}">Facebook</a></div>
+
+</div>
