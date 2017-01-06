@@ -6,7 +6,26 @@
         </li>
     </ul>
     <form ng-submit="save()">
-        Namn:    <input ng-model="newProfile.name" name="name"/><br>
+        <div class="form-group">
+        <label for="name">Namn</label>
+        <input class="form-control" id="name" ng-model="newProfile.name" name="name"/>
+        </div>
+        <div class="form-group">
+            <label for="facebook">Facebook</label>
+            <input class="form-control" id="facebook" ng-model="newProfile.fbLink" />
+        </div>
+        <div class="form-group">
+            <label for="voice">Stämma</label>
+            <select id="voice" ng-model="newProfile.voice" ng-options="voice as title for (voice, title) in voices" ></select>
+        </div>
+        <div class="form-group">
+            <label for="lastFm">Last FM profil</label>
+            <input id="lastFm" class="form-control" ng-model="newProfile.lastFmProfile" />
+        </div>
+        <div class="form-group">
+            <label for="bio">Några rader om dig</label>
+            <textarea ng-model="newProfile.bio" id="bio" ></textarea>
+        </div>
         <input type="submit" class="btn btn-sm btn-success" value="Ny profil" />
     </form>
 

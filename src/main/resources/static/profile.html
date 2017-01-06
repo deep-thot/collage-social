@@ -1,8 +1,9 @@
 <div>
     <h2>{{profile.name}}</h2>
 
-
-    <div>Om {{profile.name}}: {{profile.bio || 'Inget här'}}</div>
-    <div ng-show="{{profile.fbLink}}"><a href="https://wwwfacebook.com/{{profile.fbLink}}">Facebook</a></div>
+    <h4>{{voices[profile.voice]}}</h4>
+    <div>Om {{profile.firstName}}: {{profile.bio || 'Inget här'}}</div>
+    <div ng-show="profile.fbLink"><a href="https://www.facebook.com/{{profile.fbLink}}" target="_blank">Facebook</a></div>
+    <div ng-show="profile.lastFmProfile"><a href="https://www.last.fm/user/{{profile.lastFmProfile}}" target="_blank">Last FM</a></div>
 
 </div>
