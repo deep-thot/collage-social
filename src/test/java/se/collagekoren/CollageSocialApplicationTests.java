@@ -32,7 +32,7 @@ public class CollageSocialApplicationTests {
 	}
 
 	private Profile newProfile(String name, Voice voice) {
-		return new Profile(name, "bio", "fb", "li", "lf", voice, "");
+		return new Profile(name, "bio", "fb", "li", "lf", voice, null, null,  "");
 	}
 
 	@Test

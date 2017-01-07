@@ -1,9 +1,37 @@
-<div>
+<div class="row">
+    <div class="col-lg-3">
+        <img src="/profile/image/{{profile.id}}" style="width:100%" />
+    </div>
+    <div class="col-lg-9">
     <h2>{{profile.name}}</h2>
 
     <h4>{{voices[profile.voice]}}</h4>
     <div>Om {{profile.firstName}}: {{profile.bio || 'Inget här'}}</div>
-    <div ng-show="profile.fbLink"><a href="https://www.facebook.com/{{profile.fbLink}}" target="_blank">Facebook</a></div>
-    <div ng-show="profile.lastFmProfile"><a href="https://www.last.fm/user/{{profile.lastFmProfile}}" target="_blank">Last FM</a></div>
+    <div class="age" ng-if="profile.started">Medlem sedan {{profile.started}} ({{currentYear - profile.started}} år)</div>
+    <div ng-show="profile.fbLink"><i class="fa fa-facebook"></i><a href="https://www.facebook.com/{{profile.fbLink}}" target="_blank">Facebook</a></div>
+    <div ng-show="profile.lastFmProfile"><i class="fa fa-lastfm-square"></i><a href="https://www.last.fm/user/{{profile.lastFmProfile}}" target="_blank">Last FM</a></div>
+
+    <div class="ng-cloak" ng-if="profile.loggedIn">
+        <form>
+            <div class="form-group">
+            <label for="bio">Några rader om dig</label>
+            <textarea class="form-control" id="bio" ng-model="updateProfile.bio" cols="50" rows="10">{{profile.bio}}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="started">Medlem sedan</label>
+                <input class="form-control" type="number" id="started" ng-model="updateProfile.started" value="{{profile.started}}" />
+            </div>
+            <div class="form-group">
+                <label for="fb">Facebook Id (https://www.facebook.com/&lt;ditt profil id&gt;)</label>
+                <input class="form-control" type="text" ng-model="updateProfile.fbLink" id="fb" value="{{profile.fbLink}}" />
+            </div>
+            <div class="form-group">
+                <label for="lastfm">Last fm profil</label>
+                <input class="form-control" type="text" ng-model="updateProfile.lastFmProfile" id="lastfm" value="{{profile.lastFmProfile}}"/>
+            </div>
+            <button ng-click="update()">Uppdatera</button>
+        </form>
+    </div>
+    </div>
 
 </div>

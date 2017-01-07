@@ -14,4 +14,8 @@ public interface ProfileRepository extends CrudRepository<Profile, Integer> {
     Iterable<Profile> findAll();
 
     Stream<Profile> findByVoice(Voice voice);
+
+    Profile findFirstByEmail(String email);
+
+
 }

@@ -1,5 +1,6 @@
 package se.collagekoren.request;
 
+import org.springframework.web.multipart.MultipartFile;
 import se.collagekoren.domain.Voice;
 
 /**
@@ -13,8 +14,8 @@ public class ProfileRequest {
     private String linkedInProfile;
     private String lastFmProfile;
     private Voice voice;
-    private String image;
     private Integer id;
+    private String email;
 
     public Integer getId() {
         return id;
@@ -72,11 +73,12 @@ public class ProfileRequest {
         this.voice = voice;
     }
 
-    public String getImage() {
-        return image;
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

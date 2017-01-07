@@ -18,20 +18,39 @@ public class Profile {
     private String linkedInProfile;
     private String lastFmProfile;
     private Voice voice;
-    private String image;
+    private Integer started;
+
+    @Lob
+    private byte[] image;
+
+    private String email;
 
     protected Profile(){
 
     }
 
-    public Profile(String name, String bio, String fbLink, String linkedInProfile, String lastFmProfile, Voice voice, String image) {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getStarted() {
+        return started;
+    }
+
+    public void setStarted(Integer started) {
+        this.started = started;
+    }
+
+    public Profile(String name, String bio, String fbLink, String linkedInProfile, String lastFmProfile, Voice voice, Integer started, byte[] image, String email) {
         this.name = name;
         this.bio = bio;
         this.fbLink = fbLink;
         this.linkedInProfile = linkedInProfile;
         this.lastFmProfile = lastFmProfile;
         this.voice = voice;
+        this.started = started;
         this.image = image;
+        this.email = email;
     }
 
     public Integer getId() {
@@ -73,7 +92,7 @@ public class Profile {
                 '}';
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
@@ -101,7 +120,15 @@ public class Profile {
         this.voice = voice;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -1,32 +1,47 @@
-<div>
-    Just nu finns det {{profiles.length}} profiler:
-    <ul>
-        <li ng-repeat="profile in profiles">
-            <a ng-click="showProfile(profile.id)" href>{{profile.name}}</a>
-        </li>
-    </ul>
-    <form ng-submit="save()">
-        <div class="form-group">
-        <label for="name">Namn</label>
-        <input class="form-control" id="name" ng-model="newProfile.name" name="name"/>
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 center-block">
+
+
+
+        <ul class="ng-cloak list-inline" ng-repeat="(key, value) in profiles | groupBy:'voiceText'">
+            <h4>{{key}}</h4>
+            <li ng-repeat="profile in value | orderBy:'name'" class="list-unstyled ng-cloak">
+                <div>
+                    <img class="ng-cloak" src="/profile/image/{{profile.id}}" width="75"/><a ng-click="showProfile(profile.id)" href>{{profile.name}}</a> <span ng-if="profile.loggedIn">(Du)</span>
+                    <br />
+                    <div ng-if="profile.started" class="age ng-cloak">{{currentYear - profile.started}} i kören</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 center-block">
+        <div class="ng-cloak" ng-if="user.admin"><a href="#" ng-click="toggleAdmin()">Lägg till ny profil</a></div>
+        <div class="ng-cloak" ng-if="showAdmin">
+
+            <div class="form-group">
+                <label for="name">Namn</label>
+                <input class="form-control" id="name" ng-model="newProfile.name" name="name"/>
+            </div>
+            <div class="form-group">
+                <label for="voice">Stämma</label>
+                <select id="voice" ng-model="newProfile.voice" ng-options="voice as title for (voice, title) in voices" ></select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form.control" id="email" ng-model="newProfile.email" name="email" />
+            </div>
+            <button ng-click="save()" type="submit" class="btn btn-sm btn-success" value="Ny profil" >Ny profil</button>
+            <form id="imageForm">
+                <div class="form-group">
+                    <label for="image">Bild</label>
+                    <input type="file" ngf-select ng-model="newImage.myImage" name="file" id="image"
+                           accept="image/*" >
+                </div>
+
+            </form>
         </div>
-        <div class="form-group">
-            <label for="facebook">Facebook</label>
-            <input class="form-control" id="facebook" ng-model="newProfile.fbLink" />
-        </div>
-        <div class="form-group">
-            <label for="voice">Stämma</label>
-            <select id="voice" ng-model="newProfile.voice" ng-options="voice as title for (voice, title) in voices" ></select>
-        </div>
-        <div class="form-group">
-            <label for="lastFm">Last FM profil</label>
-            <input id="lastFm" class="form-control" ng-model="newProfile.lastFmProfile" />
-        </div>
-        <div class="form-group">
-            <label for="bio">Några rader om dig</label>
-            <textarea ng-model="newProfile.bio" id="bio" ></textarea>
-        </div>
-        <input type="submit" class="btn btn-sm btn-success" value="Ny profil" />
-    </form>
+    </div>
 
 </div>

@@ -5,9 +5,23 @@ package se.collagekoren.domain;
  */
 public class ProfileView {
     private final Profile profile;
+    private final boolean loggedIn;
+
+    public static ProfileView profile(Profile profile){
+        return new ProfileView(profile);
+    }
+
+    public static ProfileView loggedInProfile(Profile profile){
+        return new ProfileView(profile, true);
+    }
+
+    private ProfileView(Profile profile, boolean loggedIn){
+        this.profile = profile;
+        this.loggedIn = loggedIn;
+    }
 
     public ProfileView(Profile profile) {
-        this.profile = profile;
+        this(profile, false);
     }
 
     public String getFirstName(){
@@ -42,7 +56,17 @@ public class ProfileView {
         return profile.getVoice();
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return profile.getImage();
+    }
+
+    public String getEmail() {return profile.getEmail();}
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public Integer getStarted() {
+        return profile.getStarted();
     }
 }

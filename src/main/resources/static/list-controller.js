@@ -1,8 +1,8 @@
 /**
  * Created by Jonatan on 2015-12-01.
  */
-angular.module('collageSocial', ['ngResource', 'ngRoute'])
-    .controller('ProfileListController', ['$scope', 'Profile', 'Auth', '$location', '$routeParams', '$route',  function($scope, Profile, Auth, $location, $routeParams, $route){
+angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angular.filter'])
+    .controller('ProfileListController', ['$scope', 'Profile', 'User',  'Auth','Image', '$location', '$routeParams', 'Upload',  function($scope, Profile, User, Auth,Image, $location, $routeParams, Upload){
         $scope.voices = {
             SOPRANO_1 : 'Sopran 1',
             SOPRANO_2 : 'Sopran 2',
@@ -13,8 +13,16 @@ angular.module('collageSocial', ['ngResource', 'ngRoute'])
             BASS_1 : 'Bas 1',
             BASS_2 : 'Bas 2'
         };
+        $scope.currentYear = new Date().getFullYear();
+        $scope.showAdmin = false;
         function reload(){
-            $scope.profiles = Profile.list();
+            $scope.profiles = Profile.list(true, function (values) {
+                values.map(function(p){
+                    p.voiceText = $scope.voices[p.voice];
+                    return p;
+                })
+            });
+            $scope.user = User.get();
         }
         reload();
         $scope.$on('$routeChangeSuccess', function(){
@@ -23,10 +31,19 @@ angular.module('collageSocial', ['ngResource', 'ngRoute'])
             }
         });
         $scope.newProfile = {};
+        $scope.newImage = {};
+
         $scope.save = function (){
+
             Profile.new($scope.newProfile, function(value, headers){
-                reload();
-                $scope.newProfile.name = '';
+                    $scope.newImageId = value.id;
+                    Upload.upload({url: '/profile/image/' + value.id, data:{image: $scope.newImage.myImage}}).then(function(){
+                        reload();
+                        $scope.newProfile = {};
+                        $scope.myImage = {};
+
+                    });
+
             });
         };
         $scope.logout = function (){
@@ -37,23 +54,46 @@ angular.module('collageSocial', ['ngResource', 'ngRoute'])
 
         function selectProfile(id) {
             $scope.profile = $scope.profiles.filter(function (profile) {
-                console.log(profile.id);
                 return profile.id == id;
             })[0];
+            $scope.updateProfile =  {
+                started: $scope.profile.started,
+                bio: $scope.profile.bio,
+                fbLink: $scope.profile.fbLink,
+                lastFmProfile: $scope.profile.lastFmProfile
+            }
         }
+
+        $scope.toggleAdmin = function (){
+            $scope.showAdmin = !$scope.showAdmin;
+        };
 
         $scope.showProfile = function(id){
             selectProfile(id);
             $location.path('profile/'+id);
+        };
+
+
+
+        $scope.update = function(){
+            $scope.updateProfile.id = $scope.profile.id;
+            Profile.update($scope.updateProfile, function () {
+                $scope.showProfile($scope.profile.id);
+                $scope.updateProfile = $scope.profile;
+            })
         }
 
 
     }])
     .controller('ProfileController', ['$scope', 'state', 'Profile', '$routeParams', function($scope, state, Profile, $routeParams){
-         Profile.list(function(profiles){
-            $scope.profile = profiles.filter(function(profile){
-                console.log(profile.id);
-                return profile.id == $routeParams.id;
-            })[0];
-         })
+         function loadProfile() {
+             Profile.list(false, function (profiles) {
+                 $scope.profile = profiles.filter(function (profile) {
+                     return profile.id == $routeParams.id;
+                 })[0];
+             });
+         }
+         loadProfile();
+
+
     }]);

@@ -4,7 +4,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
+    <script src="ng-file-upload-all.min.js" ></script>
+    <script src="angular-filter.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="app.js" ></script>
     <script src="service.js" ></script>
     <script src="list-controller.js" ></script>
@@ -27,7 +31,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="cs-nav">
             <ul class="nav navbar-nav">
-                <li><a href="/">Start</a></li>
+                <li><a href="/">Medlemslista</a></li>
             </ul>
             <div class="navbar-right">
                 <#if userDetails??>
@@ -40,11 +44,22 @@
 </nav>
 <#if principal?? && principal.authenticated>
 <div ng-controller="ProfileListController">
-<ng-view></ng-view>
-</div>
+    <#if profileRequested??>
+        Hej ${userDetails.name.givenName}, av någon anledning blev du inte igenkänd automatiskt. Du kommer åt sidan så fort ditt medlemskap i kören bekräftats
+    <#else>
+        <ng-view></ng-view>
+    </#if>
+
+
 <button ng-click="logout()">Logga ut</button>
+</div>
 <#else>
+<div class="row">
+    <div class="col-lg-10 center-block">
     <a href="/login/google">Logga in med Google</a>
+    </div>
+
+</div>
 </#if>
 
 </div>
