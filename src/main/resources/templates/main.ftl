@@ -1,6 +1,7 @@
 <!doctype html>
 <html ng-app="collageApp">
 <head>
+    <title>Collagekörens medlemsarkiv</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
