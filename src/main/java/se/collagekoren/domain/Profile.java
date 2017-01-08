@@ -55,6 +55,7 @@ public class Profile {
         this.started = started;
         this.image = image;
         this.email = email;
+        this.address = address;
         this.phoneNumber = phoneNumber;
     }
 

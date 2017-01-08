@@ -19,6 +19,7 @@
 </head>
 <body>
 <div class="container">
+<div ng-controller="ProfileListController">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -39,6 +40,7 @@
                 </ul>
                 <div class="navbar-right">
                 <#if userDetails??>
+                    <button ng-click="logout()">Logga ut</button>
                     <p class="navbar-text">${userDetails.name.givenName}</p>
                     <img src="${userDetails.image.url}" />
                 </#if>
@@ -47,15 +49,12 @@
         </div><!-- /.container-fluid -->
     </nav>
 <#if currentUser.loggedIn>
-    <div ng-controller="ProfileListController">
+
         <#if profileRequested??>
             Hej ${userDetails.name.givenName}, av någon anledning blev du inte igenkänd automatiskt. Du kommer åt sidan så fort ditt medlemskap i kören bekräftats
         <#else>
             <ng-view></ng-view>
         </#if>
-
-
-        <button ng-click="logout()">Logga ut</button>
     </div>
 <#else>
     <div class="row">

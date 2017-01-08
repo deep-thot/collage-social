@@ -1,25 +1,29 @@
 <div class="row">
-    <div class="col-lg-3">
-        <img ng-src="/profile/image/{{profile.id}}" style="width:100%"/>
-    </div>
-    <div class="col-lg-9">
-        <h2>{{profile.name}}</h2>
+    <div class="col-lg-10 center-block">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-5">
+                <img onerror="if (this.src != '/default.jpg' ) this.src='/default.jpg'" ng-src="/profile/image/{{profile.id}}" style="width:100%"/>
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-9">
+                <h2>{{profile.name}}</h2>
 
-        <h4>{{voices[profile.voice]}}</h4>
-        <div class="lead">Om {{profile.firstName}}:</div>
-        <div><span ng-bind-html="profile.bio"></span></div>
-        <div class="age" ng-if="profile.started"><strong>Medlem sedan</strong> <span>{{profile.started}} ({{currentYear - profile.started}} år)</span>
-        </div>
-        <div><strong>Email: </strong> <a href="mailto:{{profile.email}}">{{profile.email}}</a></div>
-        <div><strong>Telefon: </strong> <a href="tel:{{profile.phoneNumber}}">{{profile.phoneNumber}}</a></div>
-        <div>
-            <div class="info adjusted"><strong>Adress: </strong> </div><div class="info address"><pre>{{profile.address}}</pre></div>
-        </div>
-        <div ng-show="profile.fbLink"><img class="icon" src="/fb.png"/><a
-                href="https://www.facebook.com/{{profile.fbLink}}" target="_blank">Facebook</a></div>
-        <div ng-show="profile.lastFmProfile"><i class="icon fa fa-lastfm-square fa-2x"></i>
-            <div class="info lf">
-                <a href="https://www.last.fm/user/{{profile.lastFmProfile}}" target="_blank">Last FM</a>
+                <h4>{{voices[profile.voice]}}</h4>
+                <div class="lead">Om {{profile.firstName}}:</div>
+                <div><span ng-bind-html="profile.bio"></span></div>
+                <div class="age" ng-if="profile.started"><strong>Medlem sedan</strong> <span>{{profile.started}} ({{currentYear - profile.started}} år)</span>
+                </div>
+                <div><strong>Email: </strong> <a href="mailto:{{profile.email}}">{{profile.email}}</a></div>
+                <div><strong>Telefon: </strong> <a href="tel:{{profile.phoneNumber}}">{{profile.phoneNumber}}</a></div>
+                <div>
+                    <div class="info adjusted"><strong>Adress: </strong> </div><div class="info address"><pre>{{profile.address}}</pre></div>
+                </div>
+                <div ng-show="profile.fbLink"><img class="icon" src="/fb.png"/><a
+                        href="https://www.facebook.com/{{profile.fbLink}}" target="_blank">Facebook</a></div>
+                <div ng-show="profile.lastFmProfile"><i class="icon fa fa-lastfm-square fa-2x"></i>
+                    <div class="info lf">
+                        <a href="https://www.last.fm/user/{{profile.lastFmProfile}}" target="_blank">Last FM</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -27,11 +31,11 @@
 
 <div class="row divider"></div>
 <div class="row ng-cloak" ng-if="profile.loggedIn || user.admin">
-        <div class="col-lg-6 col-sm-12 col-xs-12 center-block">
-            <div class="clearfix">
+    <div class="col-lg-6 col-sm-12 col-xs-12 center-block">
+        <div class="clearfix">
             <div class="pull-right"><a ng-click="toggleEdit()">Redigera profil</a></div>
-            </div>
-            <div class="panel ng-cloak" ng-if="editProfile">
+        </div>
+        <div class="panel ng-cloak" ng-if="editProfile">
             <form >
                 <div class="form-group">
                     <label for="bio">Några rader om dig</label>
@@ -64,7 +68,7 @@
 
                 <button ng-click="update()">Uppdatera</button>
             </form>
-            </div>
         </div>
     </div>
+</div>
 
