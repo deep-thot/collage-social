@@ -26,7 +26,7 @@ public class CurrentProfileFactory {
         this.profileRepository = profileRepository;
     }
 
-    Optional<Profile> getCurrentProfile(OAuth2Authentication auth2Authentication){
+    public Optional<Profile> getCurrentProfile(OAuth2Authentication auth2Authentication){
         return getCurrentProfile(getUserDetails(auth2Authentication));
     }
 

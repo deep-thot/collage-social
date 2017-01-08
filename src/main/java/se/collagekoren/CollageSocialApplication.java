@@ -23,7 +23,10 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.util.WebUtils;
+import se.collagekoren.controller.CurrentProfileFactory;
+import se.collagekoren.request.CurrentUserMethodArgumentResolver;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -83,6 +86,12 @@ public class CollageSocialApplication extends WebSecurityConfigurerAdapter{
         bean.setOrder(-100);
         return bean;
     }
+
+    @Bean
+    HandlerMethodArgumentResolver currentUserResolver(CurrentProfileFactory profileFactory){
+        return new CurrentUserMethodArgumentResolver(profileFactory);
+    }
+
 
     private Filter csrfHeaderFilter(){
         return new OncePerRequestFilter() {

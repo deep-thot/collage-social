@@ -1,7 +1,7 @@
 /**
  * Created by Jonatan on 2015-12-01.
  */
-angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angular.filter'])
+angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angular.filter', 'ngSanitize'])
     .controller('ProfileListController', ['$scope', 'Profile', 'User',  'Auth','Image', '$location', '$routeParams', 'Upload',  function($scope, Profile, User, Auth,Image, $location, $routeParams, Upload){
         $scope.voices = {
             SOPRANO_1 : 'Sopran 1',
@@ -15,6 +15,7 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
         };
         $scope.currentYear = new Date().getFullYear();
         $scope.showAdmin = false;
+        $scope.editProfile = false;
         function reload(){
             $scope.profiles = Profile.list(true, function (values) {
                 values.map(function(p){
@@ -58,10 +59,13 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
             })[0];
             $scope.updateProfile =  {
                 started: $scope.profile.started,
-                bio: $scope.profile.bio,
+                bio: $scope.profile.rawBio,
                 fbLink: $scope.profile.fbLink,
-                lastFmProfile: $scope.profile.lastFmProfile
-            }
+                lastFmProfile: $scope.profile.lastFmProfile,
+                phoneNumber: $scope.profile.phoneNumber,
+                address: $scope.profile.address
+            };
+            $scope.editProfile = false;
         }
 
         $scope.toggleAdmin = function (){
@@ -81,6 +85,10 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
                 $scope.showProfile($scope.profile.id);
                 $scope.updateProfile = $scope.profile;
             })
+        };
+
+        $scope.toggleEdit = function(){
+            $scope.editProfile = !$scope.editProfile;
         }
 
 

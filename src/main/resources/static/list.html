@@ -3,13 +3,20 @@
 
 
 
-        <ul class="ng-cloak list-inline" ng-repeat="(key, value) in profiles | groupBy:'voiceText'">
-            <h4>{{key}}</h4>
-            <li ng-repeat="profile in value | orderBy:'name'" class="list-unstyled ng-cloak">
-                <div>
-                    <img class="ng-cloak" src="/profile/image/{{profile.id}}" width="75"/><a ng-click="showProfile(profile.id)" href>{{profile.name}}</a> <span ng-if="profile.loggedIn">(Du)</span>
-                    <br />
-                    <div ng-if="profile.started" class="age ng-cloak">{{currentYear - profile.started}} i kören</div>
+        <ul class="ng-cloak list-inline voice" ng-repeat="(key, value) in profiles | groupBy:'voiceText'">
+            <h3>{{key}}</h3>
+            <li ng-repeat="profile in value | orderBy:'name'" class="list-unstyled ng-cloak profiles">
+                <div class="profile">
+                    <div>
+                        <img onerror="if (this.src != '/default.jpg' ) this.src='/default.jpg'" class="ng-cloak" ng-src="/profile/image/{{profile.id}}" width="75"/>
+                    </div>
+                    <div class="profileTexts">
+                        <div class="profileName">
+                            <h4><a ng-click="showProfile(profile.id)" href>{{profile.name}}</a> <span ng-if="profile.loggedIn">(Du)</span></h4>
+
+                        </div>
+                        <div ng-if="profile.started" class="age ng-cloak">{{currentYear - profile.started}} år i kören</div>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -32,7 +39,14 @@
                 <label for="email">Email</label>
                 <input class="form.control" id="email" ng-model="newProfile.email" name="email" />
             </div>
-            <button ng-click="save()" type="submit" class="btn btn-sm btn-success" value="Ny profil" >Ny profil</button>
+            <div class="form-group">
+                <label for="phone">Email</label>
+                <input class="form.control" id="phone" ng-model="newProfile.phoneNumber" name="email" />
+            </div>
+            <div class="form-group">
+                <label for="address">Adress</label>
+                <textarea id="address" class="form-control" rows="4" cols="30" ng-model="newProfile.address" ></textarea>
+            </div>
             <form id="imageForm">
                 <div class="form-group">
                     <label for="image">Bild</label>
@@ -41,6 +55,7 @@
                 </div>
 
             </form>
+            <button ng-click="save()" type="submit" class="btn btn-sm btn-success" value="Ny profil" >Ny profil</button>
         </div>
     </div>
 

@@ -1,5 +1,6 @@
 package se.collagekoren.domain;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -10,7 +11,19 @@ public class CurrentUser {
     private final boolean admin;
     private final Map<String, Object> userDetails;
 
-    public CurrentUser(Profile profile, boolean admin, Map<String, Object> userDetails) {
+    public static CurrentUser guest(){
+        return new CurrentUser(null, false, Collections.emptyMap());
+    }
+
+    public static CurrentUser verified(Profile profile, boolean admin, Map<String, Object> userDetails){
+        return new CurrentUser(profile, admin, userDetails);
+    }
+
+    public static CurrentUser loggedInUser(Map<String, Object> userDetails){
+        return new CurrentUser(null, false, userDetails);
+    }
+
+    private CurrentUser(Profile profile, boolean admin, Map<String, Object> userDetails) {
         this.profile = profile;
         this.admin = admin;
         this.userDetails = userDetails;
@@ -25,6 +38,10 @@ public class CurrentUser {
     }
 
     public boolean isLoggedIn(){
+        return !userDetails.isEmpty();
+    }
+
+    public boolean isVerified(){
         return profile != null;
     }
 

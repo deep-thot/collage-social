@@ -1,11 +1,14 @@
 package se.collagekoren.domain;
 
+import java.util.Optional;
+
 /**
  * Created by Eruenion on 10/11/16.
  */
 public class ProfileView {
     private final Profile profile;
     private final boolean loggedIn;
+    private final String formattedBio;
 
     public static ProfileView profile(Profile profile){
         return new ProfileView(profile);
@@ -18,9 +21,10 @@ public class ProfileView {
     private ProfileView(Profile profile, boolean loggedIn){
         this.profile = profile;
         this.loggedIn = loggedIn;
+        this.formattedBio = Optional.ofNullable(profile.getBio()).map(s -> s.replace("\n", "<br />")).orElse("");
     }
 
-    public ProfileView(Profile profile) {
+    private ProfileView(Profile profile) {
         this(profile, false);
     }
 
@@ -37,6 +41,10 @@ public class ProfileView {
     }
 
     public String getBio() {
+        return formattedBio;
+    }
+
+    public String getRawBio(){
         return profile.getBio();
     }
 
@@ -68,5 +76,13 @@ public class ProfileView {
 
     public Integer getStarted() {
         return profile.getStarted();
+    }
+
+    public String getAddress() {
+        return profile.getAddress();
+    }
+
+    public String getPhoneNumber() {
+        return profile.getPhoneNumber();
     }
 }

@@ -13,12 +13,16 @@ public class Profile {
     private Integer id;
 
     private String name;
+    @Column(length = 1000000)
     private String bio;
     private String fbLink;
     private String linkedInProfile;
     private String lastFmProfile;
     private Voice voice;
     private Integer started;
+    @Column(length=1000)
+    private String address;
+    private String phoneNumber;
 
     @Lob
     private byte[] image;
@@ -41,7 +45,7 @@ public class Profile {
         this.started = started;
     }
 
-    public Profile(String name, String bio, String fbLink, String linkedInProfile, String lastFmProfile, Voice voice, Integer started, byte[] image, String email) {
+    public Profile(String name, String bio, String fbLink, String linkedInProfile, String lastFmProfile, Voice voice, Integer started, byte[] image, String email, String address, String phoneNumber) {
         this.name = name;
         this.bio = bio;
         this.fbLink = fbLink;
@@ -51,6 +55,7 @@ public class Profile {
         this.started = started;
         this.image = image;
         this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     public Integer getId() {
@@ -130,5 +135,21 @@ public class Profile {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

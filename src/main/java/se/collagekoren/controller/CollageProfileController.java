@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,30 +34,45 @@ public class CollageProfileController {
 
     private ProfileRepository profileRepository;
     private RequestedProfileRepository requestedProfileRepository;
-    private CurrentProfileFactory profileFactory;
     private ImageRepository imageRepository;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public CollageProfileController(ProfileRepository profileRepository, RequestedProfileRepository requestedProfileRepository, CurrentProfileFactory profileFactory, ImageRepository imageRepository) {
+    public CollageProfileController(ProfileRepository profileRepository, RequestedProfileRepository requestedProfileRepository, ImageRepository imageRepository) {
         this.profileRepository = profileRepository;
         this.requestedProfileRepository = requestedProfileRepository;
-        this.profileFactory = profileFactory;
         this.imageRepository = imageRepository;
     }
 
     @RequestMapping("/profile/new")
     @ResponseBody
-    public ProfileView newProfile(@RequestBody ProfileRequest request){
-        Profile profile = new Profile(request.getName(), request.getBio(), request.getFbLink(), request.getLinkedInProfile(), request.getLastFmProfile(), request.getVoice(), null, null, request.getEmail());
+    public ProfileView newProfile(@RequestBody ProfileRequest request, CurrentUser currentUser){
+        if(!currentUser.isAdmin()){
+            throw new NotAdminException();
+        }
+        Profile profile = new Profile(
+                request.getName(),
+                request.getBio(),
+                request.getFbLink(),
+                request.getLinkedInProfile(),
+                request.getLastFmProfile(),
+                request.getVoice(),
+                null,
+                null,
+                request.getEmail(),
+                request.getAddress(),
+                request.getPhoneNumber());
         Profile result = profileRepository.save(profile);
         return ProfileView.profile(result);
     }
 
     @PostMapping("/profile/image/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void saveImage(@RequestParam("image") MultipartFile image, @PathVariable Integer id, OAuth2Authentication auth){
+    public void saveImage(@RequestParam("image") MultipartFile image, @PathVariable Integer id, CurrentUser currentUser){
+        if(!currentUser.isVerified()){
+            throw new NotAdminException();
+        }
         try {
             imageRepository.save(new Image(id, image.getBytes()));
         } catch (IOException e) {
@@ -68,8 +82,8 @@ public class CollageProfileController {
 
     @GetMapping(value = "/profile/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
-    public byte[] getImage(@PathVariable Integer id, OAuth2Authentication auth2Authentication, HttpServletResponse response){
-        if(!auth2Authentication.isAuthenticated() || !profileFactory.getCurrentProfile(auth2Authentication).isPresent()){
+    public byte[] getImage(@PathVariable Integer id, CurrentUser currentUser, HttpServletResponse response){
+        if(!currentUser.isVerified()){
             throw noProfileImage(id);
         }
         response.setHeader("Cache-Control", "max-age=86400");
@@ -83,13 +97,12 @@ public class CollageProfileController {
 
     @RequestMapping("/profile/all")
     @ResponseBody
-    public List<ProfileView> listAll(OAuth2Authentication authentication){
-        Optional<Profile> currentProfile = profileFactory.getCurrentProfile(authentication);
-        if(!currentProfile.isPresent()){
-            return emptyList();
-        }
+    public List<ProfileView> listAll(CurrentUser currentUser){
+       if(!currentUser.isVerified()){
+           return emptyList();
+       }
         return StreamSupport.stream(profileRepository.findAll().spliterator(), false).map((profile) -> {
-            if(currentProfile.filter(p -> p.getId().equals(profile.getId())).isPresent()){
+            if(profile.getId().equals(currentUser.getProfile().getId())){
                 return ProfileView.loggedInProfile(profile);
             }
             return ProfileView.profile(profile);
@@ -98,25 +111,33 @@ public class CollageProfileController {
 
     @RequestMapping("/profile/voice/{voice}")
     @ResponseBody
-    public Collection<Profile> allInVoice(@PathVariable Voice voice){
+    public Collection<Profile> allInVoice(@PathVariable Voice voice, CurrentUser currentUser){
+        if(!currentUser.isVerified()){
+            return emptyList();
+        }
         return profileRepository.findByVoice(voice).collect(toList());
     }
 
     @RequestMapping({"/", "/start"})
-    public String start(OAuth2Authentication authentication, Model model){
-        model.addAttribute("principal", authentication);
-        if(authentication != null && authentication.isAuthenticated()) {
-            Map<String, Object> details = getUserDetails(authentication);
-            Optional<Profile> currentProfile = profileFactory.getCurrentProfile(details);
-            currentProfile.ifPresent(profile -> model.addAttribute("currentProfile", profile));
-            if(!currentProfile.isPresent()){
-                List<Map<String, String>> emails = (List<Map<String, String>>) details.getOrDefault("emails", emptyList());
-                emails.stream().map(m -> m.get("value")).findFirst().ifPresent(email -> requestedProfileRepository.save(new RequestedProfile(email, (String)details.get("displayName"), getDataBlob(details))));
+    public String start(Model model, CurrentUser currentUser){
+        model.addAttribute("currentUser", currentUser);
+
+        if(currentUser.isLoggedIn()){
+            Map<String, Object> details = currentUser.getUserDetails();
+            if(!currentUser.isVerified()) {
+                addRequestedProfile(details);
                 model.addAttribute("profileRequested", true);
             }
             model.addAttribute("userDetails", details);
         }
+
         return "main";
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addRequestedProfile(Map<String, Object> details) {
+        List<Map<String, String>> emails = (List<Map<String, String>>) details.getOrDefault("emails", emptyList());
+        emails.stream().map(m -> m.get("value")).findFirst().ifPresent(email -> requestedProfileRepository.save(new RequestedProfile(email, (String) details.get("displayName"), getDataBlob(details))));
     }
 
     private String getDataBlob(Map<String, Object> userDetails){
@@ -128,10 +149,6 @@ public class CollageProfileController {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> getUserDetails(OAuth2Authentication authentication) {
-        return (Map<String, Object>)authentication.getUserAuthentication().getDetails();
-    }
 
     @RequestMapping("/profile/update")
     @ResponseBody
@@ -144,6 +161,8 @@ public class CollageProfileController {
         one.setFbLink(request.getFbLink());
         one.setLastFmProfile(request.getLastFmProfile());
         one.setStarted(request.getStarted());
+        one.setAddress(request.getAddress());
+        one.setPhoneNumber(request.getPhoneNumber());
         profileRepository.save(one);
         return one;
     }
@@ -155,7 +174,12 @@ public class CollageProfileController {
         return e.getMessage();
     }
 
-
+    @ExceptionHandler(NotAdminException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public String unauthorized(NotAdminException e){
+        return "You are not allowed to do that";
+    }
 
 
 
