@@ -81,9 +81,10 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
 
         $scope.update = function(){
             $scope.updateProfile.id = $scope.profile.id;
-            Profile.update($scope.updateProfile, function () {
-                $scope.showProfile($scope.profile.id);
+            Profile.update($scope.updateProfile, function (value) {
+                $scope.profile = value;
                 $scope.updateProfile = $scope.profile;
+                $scope.toggleEdit();
             })
         };
 

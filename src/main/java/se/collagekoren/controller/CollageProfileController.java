@@ -152,7 +152,10 @@ public class CollageProfileController {
 
     @RequestMapping("/profile/update")
     @ResponseBody
-    public Profile update(@RequestBody UpdateProfileRequest request){
+    public ProfileView update(@RequestBody UpdateProfileRequest request, CurrentUser currentUser){
+        if(!currentUser.isVerified()){
+            throw new NotAdminException();
+        }
         Profile one = profileRepository.findOne(request.getId());
         if(one == null){
             throw new IllegalArgumentException("No such profile");
@@ -164,7 +167,7 @@ public class CollageProfileController {
         one.setAddress(request.getAddress());
         one.setPhoneNumber(request.getPhoneNumber());
         profileRepository.save(one);
-        return one;
+        return one.getId().equals(currentUser.getProfile().getId()) ? ProfileView.loggedInProfile(one) : ProfileView.profile(one);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
