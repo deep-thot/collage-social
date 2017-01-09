@@ -28,7 +28,13 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
         reload();
         $scope.$on('$routeChangeSuccess', function(){
             if($routeParams.id){
-                selectProfile($routeParams.id);
+                if($scope.profiles && $scope.profiles.length > 0) {
+                    selectProfile($routeParams.id);
+                } else {
+                    $scope.watch($scope.profiles, function(){
+                        selectProfile($routeParams.id);
+                    })
+                }
             }
         });
         $scope.newProfile = {};
