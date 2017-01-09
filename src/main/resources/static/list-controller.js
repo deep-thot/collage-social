@@ -31,8 +31,10 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
                 if($scope.profiles && $scope.profiles.length > 0) {
                     selectProfile($routeParams.id);
                 } else {
-                    $scope.watch($scope.profiles, function(){
-                        selectProfile($routeParams.id);
+                    $scope.$watch($scope.profiles, function(){
+                        if($scope.profiles.length > 0) {
+                            selectProfile($routeParams.id);
+                        }
                     })
                 }
             }
@@ -43,13 +45,13 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
         $scope.save = function (){
 
             Profile.new($scope.newProfile, function(value, headers){
-                    $scope.newImageId = value.id;
-                    Upload.upload({url: '/profile/image/' + value.id, data:{image: $scope.newImage.myImage}}).then(function(){
-                        reload();
-                        $scope.newProfile = {};
-                        $scope.myImage = {};
+                $scope.newImageId = value.id;
+                Upload.upload({url: '/profile/image/' + value.id, data:{image: $scope.newImage.myImage}}).then(function(){
+                    reload();
+                    $scope.newProfile = {};
+                    $scope.myImage = {};
 
-                    });
+                });
 
             });
         };
@@ -101,14 +103,14 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
 
     }])
     .controller('ProfileController', ['$scope', 'state', 'Profile', '$routeParams', function($scope, state, Profile, $routeParams){
-         function loadProfile() {
-             Profile.list(false, function (profiles) {
-                 $scope.profile = profiles.filter(function (profile) {
-                     return profile.id == $routeParams.id;
-                 })[0];
-             });
-         }
-         loadProfile();
+        function loadProfile() {
+            Profile.list(false, function (profiles) {
+                $scope.profile = profiles.filter(function (profile) {
+                    return profile.id == $routeParams.id;
+                })[0];
+            });
+        }
+        loadProfile();
 
 
     }]);
