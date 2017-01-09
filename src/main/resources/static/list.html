@@ -3,7 +3,7 @@
 
 
 
-        <ul class="ng-cloak list-inline voice" ng-repeat="(key, value) in profiles | groupBy:'voiceText'">
+        <ul class="ng-cloak list-inline voice" ng-repeat="(key, value) in profiles | orderBy:'voiceText' | groupBy:'voiceText' ">
             <h3>{{key}}</h3>
             <li ng-repeat="profile in value | orderBy:'name'" class="list-unstyled ng-cloak profiles">
                 <div class="profile">

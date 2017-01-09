@@ -41,7 +41,7 @@
                 </ul>
                 <div class="navbar-right">
                 <#if userDetails??>
-                    <button ng-click="logout()">Logga ut</button>
+                    <a class="navbar-text" ng-click="logout()"><span class="text-danger">Logga ut</span></a>
                     <p class="navbar-text">${userDetails.name.givenName}</p>
                     <img src="${userDetails.image.url}" />
                 </#if>
@@ -51,12 +51,12 @@
     </nav>
 <#if currentUser.loggedIn>
 
-        <#if profileRequested??>
-            Hej ${userDetails.name.givenName}, av någon anledning blev du inte igenkänd automatiskt. Du kommer åt sidan så fort ditt medlemskap i kören bekräftats
-        <#else>
-            <ng-view></ng-view>
-        </#if>
-    </div>
+    <#if profileRequested??>
+        Hej ${userDetails.name.givenName}, av någon anledning blev du inte igenkänd automatiskt. Du kommer åt sidan så fort ditt medlemskap i kören bekräftats
+    <#else>
+        <ng-view></ng-view>
+    </#if>
+</div>
 <#else>
     <div class="row">
         <div class="col-lg-10 center-block">
