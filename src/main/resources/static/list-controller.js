@@ -21,12 +21,12 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
                 values.map(function(p){
                     p.voiceText = $scope.voices[p.voice];
                     return p;
-                })
+                });
+                if($routeParams.id){
+                    selectProfile($routeParams.id);
+                }
             });
             $scope.user = User.get();
-            if($routeParams.id){
-                selectProfile($routeParams.id);
-            }
         }
         reload();
         $scope.$on('$routeChangeSuccess', function(){
