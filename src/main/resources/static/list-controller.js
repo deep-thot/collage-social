@@ -24,18 +24,15 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
                 })
             });
             $scope.user = User.get();
+            if($routeParams.id){
+                selectProfile($routeParams.id);
+            }
         }
         reload();
         $scope.$on('$routeChangeSuccess', function(){
             if($routeParams.id){
                 if($scope.profiles && $scope.profiles.length > 0) {
                     selectProfile($routeParams.id);
-                } else {
-                    $scope.$watch($scope.profiles, function(){
-                        if($scope.profiles.length > 0) {
-                            selectProfile($routeParams.id);
-                        }
-                    })
                 }
             }
         });
@@ -101,16 +98,5 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
         }
 
 
-    }])
-    .controller('ProfileController', ['$scope', 'state', 'Profile', '$routeParams', function($scope, state, Profile, $routeParams){
-        function loadProfile() {
-            Profile.list(false, function (profiles) {
-                $scope.profile = profiles.filter(function (profile) {
-                    return profile.id == $routeParams.id;
-                })[0];
-            });
-        }
-        loadProfile();
-
-
     }]);
+
