@@ -2,7 +2,7 @@
     <div class="col-lg-10 center-block">
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-5">
-                <img onerror="if (this.src != '/default.jpg' ) this.src='/default.jpg'" ng-src="/profile/image/{{profile.id}}" style="width:100%"/>
+                <img onerror="if (this.src != '/default.jpg' ) this.src='/default.jpg'" ng-src="/profile/image/{{profile.id}}{{reloadString}}" style="width:100%"/>
             </div>
             <div class="col-lg-9 col-md-9 col-sm-9">
                 <h2>{{profile.name}}</h2>
@@ -33,7 +33,26 @@
 <div class="row ng-cloak" ng-if="profile.loggedIn || user.admin">
     <div class="col-lg-6 col-sm-12 col-xs-12 center-block">
         <div class="clearfix">
-            <div class="pull-right"><a ng-click="toggleEdit()">Redigera profil</a></div>
+            <div class="pull-right">
+                <ul class="list-inline">
+                    <li class="list-unstyled">
+                        <a ng-click="toggleEdit()">Redigera profil</a>
+                    </li>
+                    <li class="list-unstyled">
+                        <a ng-click="toggleImageEdit()">Byt profilbild</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel ng-cloak" ng-if="editImage">
+            <form>
+                <div class="form-group">
+                    <label for="image">Välj en ny bild att ladda upp</label>
+                    <input type="file" ngf-select ng-model="newImage.myImage" name="file" id="image"
+                           accept="image/*" >
+                    <button class="btn btn-lg" ng-click="updateImage()" >Byt bild</button>
+                </div>
+            </form>
         </div>
         <div class="panel ng-cloak" ng-if="editProfile">
             <form >

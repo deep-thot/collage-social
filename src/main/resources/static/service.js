@@ -43,9 +43,5 @@ angular.module('profileServices', ['ngResource']).factory('Profile', ['$resource
         }
     };
 
-}]).factory('Image', ['$resource', function($resource){
-    return $resource('/profile/image/:id', {id: '@id'}, {
-        upload: {method: 'POST', headers: {'Content-Type': undefined}, transformRequest: angular.identity, isArray: false }
-    })
 }]);
 

@@ -2,7 +2,7 @@
  * Created by Jonatan on 2015-12-01.
  */
 angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angular.filter', 'ngSanitize'])
-    .controller('ProfileListController', ['$scope', 'Profile', 'User',  'Auth','Image', '$location', '$routeParams', 'Upload',  function($scope, Profile, User, Auth,Image, $location, $routeParams, Upload){
+    .controller('ProfileListController', ['$scope', 'Profile', 'User',  'Auth', '$location', '$routeParams', 'Upload',  function($scope, Profile, User, Auth, $location, $routeParams, Upload){
         $scope.voices = {
             SOPRANO_1 : 'Sopran 1',
             SOPRANO_2 : 'Sopran 2',
@@ -16,6 +16,8 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
         $scope.currentYear = new Date().getFullYear();
         $scope.showAdmin = false;
         $scope.editProfile = false;
+        $scope.editImage = false;
+        $scope.reloadString = '';
         function reload(){
             $scope.profiles = Profile.list(true, function (values) {
                 values.map(function(p){
@@ -39,14 +41,17 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
         $scope.newProfile = {};
         $scope.newImage = {};
 
+        function uploadImage(id, image) {
+            return Upload.upload({url: '/profile/image/' + id, data: {image: image}});
+        }
+
         $scope.save = function (){
 
             Profile.new($scope.newProfile, function(value, headers){
-                $scope.newImageId = value.id;
-                Upload.upload({url: '/profile/image/' + value.id, data:{image: $scope.newImage.myImage}}).then(function(){
+                uploadImage(value.id, $scope.newImage.myImage).then(function(){
                     reload();
                     $scope.newProfile = {};
-                    $scope.myImage = {};
+                    $scope.newImage.myImage = {};
 
                 });
 
@@ -95,6 +100,19 @@ angular.module('collageSocial', ['ngResource', 'ngRoute', 'ngFileUpload', 'angul
 
         $scope.toggleEdit = function(){
             $scope.editProfile = !$scope.editProfile;
+        };
+
+        $scope.toggleImageEdit = function(){
+            $scope.editImage = !$scope.editImage;
+        };
+
+        $scope.updateImage = function(){
+            uploadImage($scope.profile.id, $scope.newImage.myImage).then(function(){
+                $scope.newImage.myImage = {};
+                $scope.newImage = {};
+                $scope.reloadString = '?cb='+new Date().getTime();
+                $scope.toggleImageEdit();
+            })
         }
 
 

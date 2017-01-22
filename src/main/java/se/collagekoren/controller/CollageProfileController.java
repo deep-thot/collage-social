@@ -20,7 +20,10 @@ import se.collagekoren.request.UpdateProfileRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import static java.util.Collections.emptyList;
@@ -161,13 +164,18 @@ public class CollageProfileController {
             throw new IllegalArgumentException("No such profile");
         }
         one.setBio(request.getBio());
-        one.setFbLink(request.getFbLink());
+        one.setFbLink(getFbLink(request));
         one.setLastFmProfile(request.getLastFmProfile());
         one.setStarted(request.getStarted());
         one.setAddress(request.getAddress());
         one.setPhoneNumber(request.getPhoneNumber());
         profileRepository.save(one);
         return one.getId().equals(currentUser.getProfile().getId()) ? ProfileView.loggedInProfile(one) : ProfileView.profile(one);
+    }
+
+    private String getFbLink(@RequestBody UpdateProfileRequest request) {
+        String fb = request.getFbLink();
+        return fb.startsWith("http") || fb.startsWith("www") ? fb.substring(fb.lastIndexOf('/')) : fb;
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
