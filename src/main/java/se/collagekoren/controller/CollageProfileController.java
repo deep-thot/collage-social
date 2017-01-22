@@ -73,7 +73,7 @@ public class CollageProfileController {
     @PostMapping("/profile/image/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void saveImage(@RequestParam("image") MultipartFile image, @PathVariable Integer id, CurrentUser currentUser){
-        if(!currentUser.isVerified()){
+        if(!allowedToUpdate(currentUser, id)){
             throw new NotAdminException();
         }
         try {
@@ -156,7 +156,7 @@ public class CollageProfileController {
     @RequestMapping("/profile/update")
     @ResponseBody
     public ProfileView update(@RequestBody UpdateProfileRequest request, CurrentUser currentUser){
-        if(!allowedToUpdate(request, currentUser)){
+        if(!allowedToUpdate(currentUser, request.getId())){
             throw new NotAdminException();
         }
         Profile one = profileRepository.findOne(request.getId());
@@ -173,8 +173,8 @@ public class CollageProfileController {
         return one.getId().equals(currentUser.getProfile().getId()) ? ProfileView.loggedInProfile(one) : ProfileView.profile(one);
     }
 
-    private boolean allowedToUpdate(@RequestBody UpdateProfileRequest request, CurrentUser currentUser) {
-        return currentUser.isVerified() && (request.getId().equals(currentUser.getProfile().getId()) || currentUser.isAdmin());
+    private boolean allowedToUpdate(CurrentUser currentUser, Integer id) {
+        return currentUser.isVerified() && (id.equals(currentUser.getProfile().getId()) || currentUser.isAdmin());
     }
 
     private String getFbLink(@RequestBody UpdateProfileRequest request) {
