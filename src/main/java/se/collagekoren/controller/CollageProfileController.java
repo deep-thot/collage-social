@@ -156,7 +156,7 @@ public class CollageProfileController {
     @RequestMapping("/profile/update")
     @ResponseBody
     public ProfileView update(@RequestBody UpdateProfileRequest request, CurrentUser currentUser){
-        if(!currentUser.isVerified()){
+        if(!allowedToUpdate(request, currentUser)){
             throw new NotAdminException();
         }
         Profile one = profileRepository.findOne(request.getId());
@@ -171,6 +171,10 @@ public class CollageProfileController {
         one.setPhoneNumber(request.getPhoneNumber());
         profileRepository.save(one);
         return one.getId().equals(currentUser.getProfile().getId()) ? ProfileView.loggedInProfile(one) : ProfileView.profile(one);
+    }
+
+    private boolean allowedToUpdate(@RequestBody UpdateProfileRequest request, CurrentUser currentUser) {
+        return currentUser.isVerified() && (request.getId().equals(currentUser.getProfile().getId()) || currentUser.isAdmin());
     }
 
     private String getFbLink(@RequestBody UpdateProfileRequest request) {
@@ -191,7 +195,6 @@ public class CollageProfileController {
     public String unauthorized(NotAdminException e){
         return "You are not allowed to do that";
     }
-
 
 
 }
